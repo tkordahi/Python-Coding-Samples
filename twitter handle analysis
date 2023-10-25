@@ -1,0 +1,626 @@
+''' 
+*@file twitter_handle_analysis.py
+*@brief Analyzes tweets by twitter handle by looking at polarity, subjectivity, flesch-kincaid grade level and smog index 
+* 
+*@author Tina Kordahi
+*@date April 16, 2021
+*@bug None
+*
+'''
+
+
+!pip install syllables
+import json, math, requests, syllables, textblob, nltk, matplotlib.pyplot as plt
+nltk.download("punkt")
+
+def polarity():
+  response = requests.get("https://dgoldberg.sdsu.edu/515/customer_service_tweets_full.json")
+  data = json.loads(response.text)
+
+  amazon = []
+  apple = []
+  playstation = []
+  comcast = []
+  hulu = []
+  spotify = []
+  spectrum = []
+  tmobile = []
+  uber = []
+  ups = []
+  xbox = []
+  sprint = []
+  
+  amazon_pol = 0
+  apple_pol = 0
+  playstation_pol = 0 
+  comcast_pol = 0
+  hulu_pol = 0
+  spotify_pol = 0
+  sprint_pol = 0
+  tmobile_pol = 0
+  uber_pol = 0
+  ups_pol = 0
+  xbox_pol = 0
+  spectrum_pol = 0
+  
+  for line in data:
+    if line["Company"] == "@AmazonHelp":
+      text_amazon = line["Text"]
+      amazon.append(text_amazon)
+      blob = textblob.TextBlob(text_amazon)
+      amazon_pol += blob.polarity 
+
+    if line["Company"] == "@AppleSupport":
+      text_apple = line["Text"]
+      apple.append(text_apple)
+      blob = textblob.TextBlob(text_apple)
+      apple_pol += blob.polarity 
+
+    if line["Company"] == "@AskPlayStation":
+      text_playstation = line["Text"]
+      playstation.append(text_playstation)
+      blob = textblob.TextBlob(text_playstation)
+      playstation_pol += blob.polarity 
+
+    if line["Company"] == "@comcastcares":
+      text_comcast = line["Text"]
+      comcast.append(text_comcast)
+      blob = textblob.TextBlob(text_comcast)
+      comcast_pol += blob.polarity
+
+    if line["Company"] == "@hulu_support":
+      text_hulu = line["Text"]
+      hulu.append(text_hulu)
+      blob = textblob.TextBlob(text_hulu)
+      hulu_pol += blob.polarity
+
+    if line["Company"] == "@SpotifyCares":
+      text_spotify = line["Text"]
+      spotify.append(text_spotify)
+      blob = textblob.TextBlob(text_spotify)
+      spotify_pol += blob.polarity
+
+    if line["Company"] == "@sprintcare":
+      text_sprint = line["Text"]
+      sprint.append(text_sprint)
+      blob = textblob.TextBlob(text_sprint)
+      sprint_pol += blob.polarity
+
+    if line["Company"] == "@TMobileHelp":
+      text_tmobile = line["Text"]
+      tmobile.append(text_tmobile)
+      blob = textblob.TextBlob(text_tmobile)
+      tmobile_pol += blob.polarity
+
+    if line["Company"] == "@Uber_Support":
+      text_uber = line["Text"]
+      uber.append(text_uber)
+      blob = textblob.TextBlob(text_uber)
+      uber_pol += blob.polarity
+
+    if line["Company"] == "@UPSHelp":
+      text_ups = line["Text"]
+      ups.append(text_ups)
+      blob = textblob.TextBlob(text_ups)
+      ups_pol += blob.polarity
+
+    if line["Company"] == "@XboxSupport":
+      text_xbox = line["Text"]
+      xbox.append(text_xbox)
+      blob = textblob.TextBlob(text_xbox)
+      xbox_pol += blob.polarity
+
+    if line["Company"] == "@Ask_Spectrum":
+      text_spectrum = line["Text"]
+      spectrum.append(text_spectrum)
+      blob = textblob.TextBlob(text_spectrum)
+      spectrum_pol += blob.polarity
+
+
+  avg_amazon = amazon_pol / len(amazon)
+  avg_apple = apple_pol / len(apple)
+  avg_playstation = playstation_pol / len(playstation)
+  avg_comcast = comcast_pol / len(comcast)
+  avg_hulu = hulu_pol / len(hulu)
+  avg_spotify = spotify_pol / len(spotify)
+  avg_sprint = sprint_pol / len(sprint)
+  avg_tmobile = tmobile_pol / len(tmobile)
+  avg_uber = uber_pol / len(uber)
+  avg_ups = ups_pol / len(ups)
+  avg_xbox = xbox_pol / len(xbox)
+  avg_spectrum = spectrum_pol / len(spectrum)
+
+  print("@sprintcare:", avg_sprint)
+  #print("@ask_spectrum:", avg_spectrum)
+  print("@askplaystation:", avg_playstation)
+  print("@xboxsupport:", avg_xbox)
+  print("@upshelp:", avg_ups)
+  print("@amazonhelp:", avg_amazon)
+  print("@applesupport:", avg_apple)
+  print("@uber_support:", avg_uber)
+  print("@spotifycares:", avg_spotify)
+  print("@comcastcares:", avg_comcast)
+  print("@tmobilehelp:", avg_tmobile)
+  print("@hulu_support:", avg_hulu)
+
+  x = ["@sprintcare", "@ask_spectrum", "@askplaystation", "@xboxsupport", "@upshelp", "@amazonhelp", "@applesupport", "@uber_support", "@spotifycares", "@comcastcares", "@tmobilehelp", "@hulu_support"]
+  y = [avg_sprint, avg_spectrum, avg_playstation, avg_xbox, avg_ups, avg_amazon, avg_apple, avg_uber, avg_spotify, avg_comcast, avg_tmobile, avg_hulu]
+
+  plt.bar(x,y)
+  plt.xticks(rotation = 45, ha = "right")
+  plt.title("Average Polarity by Twitter handle")
+  plt.show(block=False)
+  
+
+def subjectivity():
+
+  response = requests.get("https://dgoldberg.sdsu.edu/515/customer_service_tweets_full.json")
+  data = json.loads(response.text)
+
+  amazon = []
+  apple = []
+  playstation = []
+  comcast = []
+  hulu = []
+  spotify = []
+  spectrum = []
+  tmobile = []
+  uber = []
+  ups = []
+  xbox = []
+  sprint = []
+  
+  amazon_pol = 0
+  apple_pol = 0
+  playstation_pol = 0 
+  comcast_pol = 0
+  hulu_pol = 0
+  spotify_pol = 0
+  sprint_pol = 0
+  tmobile_pol = 0
+  uber_pol = 0
+  ups_pol = 0
+  xbox_pol = 0
+  spectrum_pol = 0
+  
+  for line in data:
+    if line["Company"] == "@AmazonHelp":
+      text_amazon = line["Text"]
+      amazon.append(text_amazon)
+      blob = textblob.TextBlob(text_amazon)
+      amazon_pol += blob.subjectivity 
+
+    if line["Company"] == "@AppleSupport":
+      text_apple = line["Text"]
+      apple.append(text_apple)
+      blob = textblob.TextBlob(text_apple)
+      apple_pol += blob.subjectivity 
+
+    if line["Company"] == "@AskPlayStation":
+      text_playstation = line["Text"]
+      playstation.append(text_playstation)
+      blob = textblob.TextBlob(text_playstation)
+      playstation_pol += blob.subjectivity 
+
+    if line["Company"] == "@comcastcares":
+      text_comcast = line["Text"]
+      comcast.append(text_comcast)
+      blob = textblob.TextBlob(text_comcast)
+      comcast_pol += blob.subjectivity
+
+    if line["Company"] == "@hulu_support":
+      text_hulu = line["Text"]
+      hulu.append(text_hulu)
+      blob = textblob.TextBlob(text_hulu)
+      hulu_pol += blob.subjectivity
+
+    if line["Company"] == "@SpotifyCares":
+      text_spotify = line["Text"]
+      spotify.append(text_spotify)
+      blob = textblob.TextBlob(text_spotify)
+      spotify_pol += blob.subjectivity
+
+    if line["Company"] == "@sprintcare":
+      text_sprint = line["Text"]
+      sprint.append(text_sprint)
+      blob = textblob.TextBlob(text_sprint)
+      sprint_pol += blob.subjectivity
+
+    if line["Company"] == "@TMobileHelp":
+      text_tmobile = line["Text"]
+      tmobile.append(text_tmobile)
+      blob = textblob.TextBlob(text_tmobile)
+      tmobile_pol += blob.subjectivity
+
+    if line["Company"] == "@Uber_Support":
+      text_uber = line["Text"]
+      uber.append(text_uber)
+      blob = textblob.TextBlob(text_uber)
+      uber_pol += blob.subjectivity
+
+    if line["Company"] == "@UPSHelp":
+      text_ups = line["Text"]
+      ups.append(text_ups)
+      blob = textblob.TextBlob(text_ups)
+      ups_pol += blob.subjectivity
+
+    if line["Company"] == "@XboxSupport":
+      text_xbox = line["Text"]
+      xbox.append(text_xbox)
+      blob = textblob.TextBlob(text_xbox)
+      xbox_pol += blob.subjectivity
+
+    if line["Company"] == "@Ask_Spectrum":
+      text_spectrum = line["Text"]
+      spectrum.append(text_spectrum)
+      blob = textblob.TextBlob(text_spectrum)
+      spectrum_pol += blob.subjectivity
+
+  avg_amazon = amazon_pol / len(amazon)
+  avg_apple = apple_pol / len(apple)
+  avg_playstation = playstation_pol / len(playstation)
+  avg_comcast = comcast_pol / len(comcast)
+  avg_hulu = hulu_pol / len(hulu)
+  avg_spotify = spotify_pol / len(spotify)
+  avg_sprint = sprint_pol / len(sprint)
+  avg_tmobile = tmobile_pol / len(tmobile)
+  avg_uber = uber_pol / len(uber)
+  avg_ups = ups_pol / len(ups)
+  avg_xbox = xbox_pol / len(xbox)
+  avg_spectrum = spectrum_pol / len(spectrum)
+
+  print("@sprintcare:", avg_sprint)
+  print("@ask_spectrum:", avg_spectrum)
+  print("@askplaystation:", avg_playstation)
+  print("@xboxsupport:", avg_xbox)
+  print("@upshelp:", avg_ups)
+  print("@amazonhelp:", avg_amazon)
+  print("@applesupport:", avg_apple)
+  print("@uber_support:", avg_uber)
+  print("@spotifycares:", avg_spotify)
+  print("@comcastcares:", avg_comcast)
+  print("@tmobilehelp:", avg_tmobile)
+  print("@hulu_support:", avg_hulu)
+
+  x = ["@sprintcare", "@ask_spectrum", "@askplaystation", "@xboxsupport", "@upshelp", "@amazonhelp", "@applesupport", "@uber_support", "@spotifycares", "@comcastcares", "@tmobilehelp", "@hulu_support"]
+  y = [avg_sprint, avg_spectrum, avg_playstation, avg_xbox, avg_ups, avg_amazon, avg_apple, avg_uber, avg_spotify, avg_comcast, avg_tmobile, avg_hulu]
+
+  plt.bar(x,y)
+  plt.xticks(rotation = 45, ha = "right")
+  plt.title("Average Subjectivity by Twitter Handle")
+  plt.show(block=False)
+  
+  
+def search(comp_name):
+
+  response = requests.get("https://dgoldberg.sdsu.edu/515/customer_service_tweets_full.json")
+  data = json.loads(response.text)
+  company = []
+  comp = ""
+  company_pol = 0
+  company_sub = 0
+
+  if comp_name == "@amazonhelp":
+    for line in data:
+      if line["Company"] == "@AmazonHelp":
+        text = line["Text"]
+        company.append(text)
+        comp = comp + text + " "
+        blob = textblob.TextBlob(text)
+        company_pol += blob.polarity
+        company_sub += blob.subjectivity
+
+  elif comp_name == "@applesupport":
+    for line in data:
+        if line["Company"] == "@AppleSupport":
+          text = line["Text"]
+          comp = comp + text + " "
+          company.append(text)
+          blob = textblob.TextBlob(text)
+          company_pol += blob.polarity
+          company_sub += blob.subjectivity
+
+  elif comp_name == "@askplaystation":
+    for line in data:
+      if line["Company"] == "@AskPlayStation":
+        text = line["Text"]
+        comp = comp + text + " "
+        company.append(text)
+        blob = textblob.TextBlob(text)
+        company_pol += blob.polarity
+        company_sub += blob.subjectivity
+
+  elif comp_name == "@spotifycares":
+    for line in data:
+      if line["Company"] == "@SpotifyCares":
+        text = line["Text"]
+        comp = comp + text + " "
+        company.append(text)
+        blob = textblob.TextBlob(text)
+        company_pol += blob.polarity
+        company_sub += blob.subjectivity
+    
+  elif comp_name == "@tmobilehelp":
+    for line in data:
+      if line["Company"] == "@TMobileHelp":
+        text = line["Text"]
+        comp = comp + text + " "
+        company.append(text)
+        blob = textblob.TextBlob(text)
+        company_pol += blob.polarity
+        company_sub += blob.subjectivity
+
+  elif comp_name == "@uber_support":
+    for line in data:
+      if line["Company"] == "@Uber_Support":
+        text = line["Text"]
+        comp = comp + text + " "
+        company.append(text)
+        blob = textblob.TextBlob(text)
+        company_pol += blob.polarity
+        company_sub += blob.subjectivity
+    
+  elif comp_name == "@upshelp":
+    for line in data:
+      if line["Company"] == "@UPSHelp":
+        text = line["Text"]
+        comp = comp + text + " "
+        company.append(text)
+        blob = textblob.TextBlob(text)
+        company_pol += blob.polarity
+        company_sub += blob.subjectivity
+    
+  elif comp_name == "@xboxsupport":
+    for line in data:
+      if line["Company"] == "@XboxSupport":
+        text = line["Text"]
+        comp = comp + text + " "
+        company.append(text)
+        blob = textblob.TextBlob(text)
+        company_pol += blob.polarity
+        company_sub += blob.subjectivity
+    
+  elif comp_name == "@ask_spectrum":
+    for line in data:
+      if line["Company"] == "@Ask_Spectrum":
+        text = line["Text"]
+        comp = comp + text + " "
+        company.append(text)
+        blob = textblob.TextBlob(text)
+        company_pol += blob.polarity
+        company_sub += blob.subjectivity
+
+  else:
+    for line in data:
+      if line["Company"] == comp_name:
+        text = line["Text"]
+        comp = comp + text + " "
+        company.append(text)
+        blob = textblob.TextBlob(text)
+        company_pol += blob.polarity
+        company_sub += blob.subjectivity
+
+  avg_pol = company_pol / len(company)
+  avg_sub = company_sub / len(company)
+
+  blob2 = textblob.TextBlob(comp)
+  sentences = len(blob2.sentences)
+  wc = len(blob2.words)
+  syl = 0
+  poly = 0
+
+  for word in blob2.words:
+    syl = syl + syllables.estimate(word)
+    if syllables.estimate(word) >= 3:
+      poly = poly + 1
+
+  smog = 1.043 * (math.sqrt(poly * (30 / sentences))) + 3.1291 
+
+
+  fkgl = (0.39 * (wc / sentences) + 11.8 * (syl / wc)) - 15.59
+
+  print("Average polarity: ", avg_pol)
+  print("Average subjectivity: ", avg_sub)
+  print("Average Flesch-Kincaid Grade Level: ", fkgl)
+  print("Average SMOG Index: ", smog)
+
+def fkgl(name):
+  response = requests.get("https://dgoldberg.sdsu.edu/515/customer_service_tweets_full.json")
+  data = json.loads(response.text)
+
+  company = ""
+  for line in data:
+    if line["Company"] == name:
+      text = line["Text"] 
+      company = company + text + " "
+
+  
+  blob = textblob.TextBlob(company)
+  sentences = len(blob.sentences)
+  wc = len(blob.words)
+  syl = 0
+
+  for word in blob.words:
+    syl = syl + syllables.estimate(word)
+
+
+  fkgl = (0.39 * (wc / sentences) + 11.8 * (syl / wc)) - 15.59
+
+  return fkgl
+
+
+def smog(name):
+
+  response = requests.get("https://dgoldberg.sdsu.edu/515/customer_service_tweets_full.json")
+  data = json.loads(response.text)
+
+  poly = 0
+  company = ""
+  for line in data:
+    if line["Company"] == name:
+      text = line["Text"] 
+      company = company + text + " "
+
+  
+  blob = textblob.TextBlob(company)
+  sentences = len(blob.sentences)
+
+  for word in blob.words:
+    if syllables.estimate(word) >= 3:
+      poly = poly + 1
+
+  smog = 1.043 * (math.sqrt(poly * (30 / sentences))) + 3.1291
+
+  return smog
+    
+
+
+
+def main():
+
+  print("Welcome to the customer service linguistics analyzer!")
+
+  run = "yes"
+
+  while run == "yes":
+    response = requests.get("https://dgoldberg.sdsu.edu/515/customer_service_tweets_full.json")
+
+    if response:
+      analysis = input("Which analysis would you like to perform (polarity/subjectivity/readability/search)?: ").lower()
+      companies = ["@amazonhelp", "@applesupport", "@ask_spectrum", "@askplaystation","@comcastcares", "@hulu_support", "@spotifycares", "@sprintcare","@tmobilehelp", "@uber_support", "@upshelp", "@xboxsupport"]
+      
+      if analysis == "polarity":
+        polarity()
+        run = input("Would you like to run another analysis (yes/no)?:" )
+        if run != "yes" and run != "no":
+          print("Incorrect response. Try again.")
+          run = "yes"
+
+      elif analysis == "subjectivity":
+        subjectivity()
+        run = input("Would you like to run another analysis (yes/no)?:" )
+        if run != "yes" and run != "no":
+          print("Incorrect response. Try again.")
+          run = "yes"
+
+      elif analysis == "readability":
+        read = input("Would you like to analyze FKGL or SMOG?: ").lower()
+
+        if read == "fkgl":
+          amazon = fkgl("@AmazonHelp")
+          apple = fkgl("@AppleSupport")
+          playstation = fkgl("@AskPlayStation")
+          comcast = fkgl("@comcastcares")
+          hulu = fkgl("@hulu_support")
+          spotify = fkgl("@SpotifyCares")
+          sprint = fkgl("@sprintcare")
+          tmobile = fkgl("@TMobileHelp")
+          uber = fkgl("@Uber_Support")
+          ups = fkgl("@UPSHelp")
+          xbox = fkgl("@XboxSupport")
+          spectrum = fkgl("@Ask_Spectrum")
+
+
+          print("@sprintcare:", sprint)
+          print("@ask_spectrum:", spectrum)
+          print("@askplaystation:", playstation)
+          print("@xboxsupport:", xbox)
+          print("@upshelp:", ups)
+          print("@amazonhelp:", amazon)
+          print("@applesupport:", apple)
+          print("@uber_support:", uber)
+          print("@spotifycares:", spotify)
+          print("@comcastcares:", comcast)
+          print("@tmobilehelp:", tmobile)
+          print("@hulu_support:", hulu)
+
+          x = ["@sprintcare", "@ask_spectrum", "@askplaystation", "@xboxsupport", "@upshelp", "@amazonhelp", "@applesupport", "@uber_support", "@spotifycares", "@comcastcares", "@tmobilehelp", "@hulu_support"]
+          y = [sprint, spectrum, playstation, xbox, ups, amazon, apple, uber, spotify, comcast, tmobile, hulu]
+
+          plt.bar(x,y)
+          plt.xticks(rotation = 45, ha = "right")
+          plt.title("Flesch-Kincaid Grade Levels by Twitter handle")
+          plt.show(block=False)
+
+          run = input("Would you like to run another analysis (yes/no)?:" )
+          if run != "yes" and run != "no":
+            print("Incorrect response. Try again.")
+            run = "yes"
+
+        elif read == "smog":
+
+          amazon = smog("@AmazonHelp")
+          apple = smog("@AppleSupport")
+          playstation = smog("@AskPlayStation")
+          comcast = smog("@comcastcares")
+          hulu = smog("@hulu_support")
+          spotify = smog("@SpotifyCares")
+          sprint = smog("@sprintcare")
+          tmobile = smog("@TMobileHelp")
+          uber = smog("@Uber_Support")
+          ups = smog("@UPSHelp")
+          xbox = smog("@XboxSupport")
+          spectrum = smog("@Ask_Spectrum")
+
+
+          print("@sprintcare:", sprint)
+          print("@ask_spectrum:", spectrum)
+          print("@askplaystation:", playstation)
+          print("@xboxsupport:", xbox)
+          print("@upshelp:", ups)
+          print("@amazonhelp:", amazon)
+          print("@applesupport:", apple)
+          print("@uber_support:", uber)
+          print("@spotifycares:", spotify)
+          print("@comcastcares:", comcast)
+          print("@tmobilehelp:", tmobile)
+          print("@hulu_support:", hulu)
+
+          x = ["@sprintcare", "@ask_spectrum", "@askplaystation", "@xboxsupport", "@upshelp", "@amazonhelp", "@applesupport", "@uber_support", "@spotifycares", "@comcastcares", "@tmobilehelp", "@hulu_support"]
+          y = [sprint, spectrum, playstation, xbox, ups, amazon, apple, uber, spotify, comcast, tmobile, hulu]
+
+          plt.bar(x,y)
+          plt.xticks(rotation = 45, ha = "right")
+          plt.title("SMOG Index by Twitter handle")
+          plt.show(block=False)
+          run = input("Would you like to run another analysis (yes/no)?:" )
+          if run != "yes" and run != "no":
+            print("Incorrect response. Try again.")
+            run = "yes"
+
+        else:
+          print("Sorry, that type of analysis is not supported. Please try again.")
+          run = input("Would you like to run another analysis (yes/no)?:" )
+          if run != "yes" and run != "no":
+            print("Incorrect response. Try again.")
+            run = "yes"
+
+      elif analysis == "search":
+        company = input("Which Twitter handle would you like to search?: ").lower()
+
+        if company not in companies:
+          print("Sorry, not a valid twitter handle.")
+
+        else:
+          search(company)
+
+        run = input("Would you like to run another analysis (yes/no)?:" )
+        if run != "yes" and run != "no":
+          print("Incorrect response. Try again.")
+          run = "yes"
+
+      else:
+        print("Sorry, that type of analysis is not supported. Please try again.")
+        run = input("Would you like to run another analysis (yes/no)?:" )
+        if run != "yes" and run != "no":
+          print("Incorrect response. Try again.")
+          run = "yes"
+
+    else:
+      print("Sorry. Connection error.")
+
+  print("Goodbye.")
+
+
+if __name__ == "__main__":
+  main()
